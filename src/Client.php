@@ -2,9 +2,9 @@
 
 namespace B3none\SteamGroupChecker;
 
+use B3none\SteamGroupChecker\Factories\GroupFactory;
 use B3none\SteamGroupChecker\Models\Response;
 use B3none\SteamGroupChecker\Processors\DetectionProcessor;
-use B3none\SteamGroupChecker\Processors\GroupProcessor;
 
 class Client
 {
@@ -15,7 +15,7 @@ class Client
 
     static function create()
     {
-        return new self(new DetectionProcessor(new GroupProcessor(new \GuzzleHttp\Client())));
+        return new self(new DetectionProcessor(new GroupFactory(new \GuzzleHttp\Client())));
     }
 
     /**
@@ -39,10 +39,10 @@ class Client
             $this->detectionProcessor->addWhitelistedGroup($whitelistedGroup);
         }
 
-        foreach ($blacklistedGroups as $blacklistedGroups) {
-            $this->detectionProcessor->addBlacklistedGroup($blacklistedGroups);
+        foreach ($blacklistedGroups as $blacklistedGroup) {
+            $this->detectionProcessor->addBlacklistedGroup($blacklistedGroup);
         }
 
-        $this->detectionProcessor->detect();
+        return $this->detectionProcessor->detect($steamId);
     }
 }

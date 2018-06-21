@@ -5,19 +5,14 @@ namespace B3none\SteamGroupChecker\Models;
 class Group
 {
     /**
-     * @var bool
+     * @var string
      */
-    protected $whitelisted = true;
-
-    /**
-     * @var bool
-     */
-    protected $blacklisted = false;
+    protected $url;
 
     /**
      * @var string
      */
-    protected $url;
+    protected $name;
 
     /**
      * @var string
@@ -35,16 +30,12 @@ class Group
      */
     public function __construct(array $groupParams = [])
     {
-        if (!empty($groupParams['whitelisted'])) {
-            $this->setWhitelisted($groupParams['whitelisted']);
-        }
-
-        if (!empty($groupParams['blacklisted'])) {
-            $this->setBlacklisted($groupParams['blacklisted']);
-        }
-
         if (!empty($groupParams['url'])) {
             $this->setUrl($groupParams['url']);
+        }
+
+        if (!empty($groupParams['name'])) {
+            $this->setName($groupParams['name']);
         }
 
         if (!empty($groupParams['groupId'])) {
@@ -54,42 +45,6 @@ class Group
         if (!empty($groupParams['members'])) {
             $this->setMembers($groupParams['members']);
         }
-
-        if (!empty($groupParams['members'])) {
-            $this->setMembers($groupParams['members']);
-        }
-    }
-
-    /**
-     * @return bool
-     */
-    public function isWhitelisted() : bool
-    {
-        return $this->whitelisted;
-    }
-
-    /**
-     * @param bool $whitelisted
-     */
-    public function setWhitelisted(bool $whitelisted) : void
-    {
-        $this->whitelisted = $whitelisted;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isBlacklisted() : bool
-    {
-        return $this->blacklisted;
-    }
-
-    /**
-     * @param bool $blacklisted
-     */
-    public function setBlacklisted(bool $blacklisted) : void
-    {
-        $this->blacklisted = $blacklisted;
     }
 
     /**
@@ -132,6 +87,9 @@ class Group
         return $this->members;
     }
 
+    /**
+     * @param string $steamId
+     */
     public function addMember(string $steamId) : void
     {
         $this->members[] = $steamId;
@@ -143,5 +101,21 @@ class Group
     public function setMembers(array $members) : void
     {
         $this->members = $members;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName(string $name) : void
+    {
+        $this->name = $name;
     }
 }

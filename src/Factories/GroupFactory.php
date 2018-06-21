@@ -34,14 +34,26 @@ class GroupFactory
         $this->client = $client;
     }
 
+    /**
+     * @param string $groupUrl
+     * @return Group
+     */
     public function processGroup(string $groupUrl)
     {
         $this->group = new Group();
+
         $this->group->setUrl($groupUrl);
+        $this->detectMembers();
+        $this->detectName();
+        $this->detectGroupID();
 
         return $this->group;
     }
 
+    /**
+     * @param string $groupUrl
+     * @param int $page
+     */
     protected function getXPath(string $groupUrl, int $page = 1)
     {
         $response = $this->client->get($groupUrl . self::GROUP_XML . "&p=" . $page);
@@ -50,7 +62,7 @@ class GroupFactory
         $this->xpath = new \DOMXPath($dom);
     }
 
-    protected function getMembers()
+    protected function detectMembers()
     {
         $pages = 2;
         for ($pageCount = 1; $pageCount <= $pages; $pageCount++) {
@@ -68,5 +80,19 @@ class GroupFactory
                 $this->group->addMember($steamId);
             }
         }
+    }
+
+    protected function detectGroupID()
+    {
+        $groupId = $this->xpath->query("/membersList/groupID64");
+
+        $this->group->setGroupId($groupId->item(0)->nodeValue);
+    }
+
+    protected function detectName()
+    {
+        $name = $this->xpath->query("/membersList/groupDetails/groupName");
+
+        $this->group->setName($name->item(0)->nodeValue);
     }
 }

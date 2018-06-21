@@ -48,8 +48,21 @@ class DetectionProcessor
         $this->blacklistedGroups[] = $this->groupFactory->processGroup($groupUrl);
     }
 
-    public function detect()
+    /**
+     * @param string $steamId
+     * @return Response
+     */
+    public function detect(string $steamId) : Response
     {
-        // TODO: Add some detection logic.
+        $response = new Response();
+
+        foreach ($this->blacklistedGroups as $blacklistedGroup) {
+            if (in_array($steamId, $blacklistedGroup->getMembers())) {
+                $response->setGrantAccess(false);
+                $response->setRejectReason("You're in a blacklisted group: " . $blacklistedGroup->getName());
+            };
+        }
+
+        return $response;
     }
 }
