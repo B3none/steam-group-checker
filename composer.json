@@ -1,0 +1,19 @@
+{
+    "name": "b3none/steam-group-checker",
+    "description": "Check whether a Steam64ID is in your group.",
+    "type": "library",
+    "authors": [
+        {
+            "name": "b3none",
+            "email": "ablackham2000@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "B3none\\SteamGroupChecker\\": "src/"
+        }
+    },
+    "require": {
+        "guzzlehttp/guzzle": "^6.3"
+    }
+}
