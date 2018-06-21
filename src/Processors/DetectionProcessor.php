@@ -2,15 +2,16 @@
 
 namespace B3none\SteamGroupChecker\Processors;
 
+use B3none\SteamGroupChecker\Factories\GroupFactory;
 use B3none\SteamGroupChecker\Models\Group;
 use B3none\SteamGroupChecker\Models\Response;
 
 class DetectionProcessor
 {
     /**
-     * @var GroupProcessor
+     * @var GroupFactory
      */
-    protected $groupProcessor;
+    protected $groupFactory;
 
     /**
      * @var string
@@ -30,21 +31,25 @@ class DetectionProcessor
     /**
      * DetectionProcessor constructor.
      *
-     * @param GroupProcessor $groupProcessor
+     * @param GroupFactory $groupFactory
      */
-    public function __construct(GroupProcessor $groupProcessor)
+    public function __construct(GroupFactory $groupFactory)
     {
-        $this->groupProcessor = $groupProcessor;
+        $this->groupFactory = $groupFactory;
     }
 
     public function addWhitelistedGroup(string $groupUrl)
     {
-        $group =
-        $this->groupProcessor->process()
+        $this->whitelistedGroups[] = $this->groupFactory->processGroup($groupUrl);
     }
 
     public function addBlacklistedGroup(string $groupUrl)
     {
+        $this->blacklistedGroups[] = $this->groupFactory->processGroup($groupUrl);
+    }
 
+    public function detect()
+    {
+        // TODO: Add some detection logic.
     }
 }
