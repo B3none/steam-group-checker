@@ -25,29 +25,6 @@ class Group
     protected $members = [];
 
     /**
-     * Group constructor.
-     * @param array $groupParams
-     */
-    public function __construct(array $groupParams = [])
-    {
-        if (!empty($groupParams['url'])) {
-            $this->setUrl($groupParams['url']);
-        }
-
-        if (!empty($groupParams['name'])) {
-            $this->setName($groupParams['name']);
-        }
-
-        if (!empty($groupParams['groupId'])) {
-            $this->setGroupId($groupParams['groupId']);
-        }
-
-        if (!empty($groupParams['members'])) {
-            $this->setMembers($groupParams['members']);
-        }
-    }
-
-    /**
      * @return string
      */
     public function getUrl() : string
