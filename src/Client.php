@@ -15,7 +15,7 @@ class Client
 
     static function create()
     {
-        return new self(new DetectionProcessor(new GroupFactory(new \GuzzleHttp\Client())));
+        return new self(new DetectionProcessor(new GroupFactory()));
     }
 
     /**

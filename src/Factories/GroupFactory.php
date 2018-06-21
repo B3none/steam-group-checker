@@ -20,19 +20,9 @@ class GroupFactory
     protected $group;
 
     /**
-     * @var \DOMXPath
+     * @var \SimpleXMLElement
      */
     protected $xpath;
-
-    /**
-     * DetectionProcessor constructor.
-     *
-     * @param Client $client
-     */
-    public function __construct(Client $client)
-    {
-        $this->client = $client;
-    }
 
     /**
      * @param string $groupUrl
@@ -56,10 +46,8 @@ class GroupFactory
      */
     protected function getXPath(string $groupUrl, int $page = 1)
     {
-        $response = $this->client->get($groupUrl . self::GROUP_XML . "&p=" . $page);
-        $bodyContents = $response->getBody()->getContents();
-        $dom = new \DOMDocument($bodyContents);
-        $this->xpath = new \DOMXPath($dom);
+        $bodyContents = file_get_contents($groupUrl . self::GROUP_XML . "&p=" . $page);
+        $this->xpath = simplexml_load_string($bodyContents);
     }
 
     protected function detectMembers()
@@ -69,30 +57,41 @@ class GroupFactory
             $this->getXPath($this->group->getUrl(), $pageCount);
 
             if ($pageCount === 1) {
-                $totalMembers = $this->xpath->query('/membersList/membersCount');
+                $totalMembers = $this->getTotalMembers();
                 $pages = ($totalMembers / 1000) + 1;
+                $pages = (int)$pages;
             }
 
-            for ($memberCount = 0; $memberCount < 1000; $memberCount++) {
-                $steamId = $this->xpath->query("/membersList/members/steamID64[{$memberCount}]");
-                $steamId = $steamId->item(0)->nodeValue;
 
-                $this->group->addMember($steamId);
+            $members = $this->xpath->xpath("/*/members/steamID64");
+            for ($memberCount = 0; $memberCount < 1000; $memberCount++) {
+                if (is_string($members[$memberCount])) {
+                    $this->group->addMember($members[$memberCount]);
+                }
             }
         }
     }
 
+    /**
+     * @return int
+     */
+    protected function getTotalMembers() : int
+    {
+        $totalMembers = ($this->xpath->xpath("/*/memberCount"))[0]->__toString();
+        return (int)$totalMembers;
+    }
+
     protected function detectGroupID()
     {
-        $groupId = $this->xpath->query("/membersList/groupID64");
+        $groupId = $this->xpath->xpath("/*/memberList/groupID64");
 
-        $this->group->setGroupId($groupId->item(0)->nodeValue);
+        $this->group->setGroupId($groupId[0]->__toString());
     }
 
     protected function detectName()
     {
-        $name = $this->xpath->query("/membersList/groupDetails/groupName");
+        $name = $this->xpath->xpath("/*/memberList/groupDetails/groupName");
 
-        $this->group->setName($name->item(0)->nodeValue);
+        $this->group->setName($name[0]->__toString());
     }
 }
