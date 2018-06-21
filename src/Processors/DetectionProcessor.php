@@ -60,7 +60,14 @@ class DetectionProcessor
             if (in_array($steamId, $blacklistedGroup->getMembers())) {
                 $response->setGrantAccess(false);
                 $response->setRejectReason("You're in a blacklisted group: " . $blacklistedGroup->getName());
+                return $response;
             };
+        }
+
+        foreach ($this->whitelistedGroups as $whitelistedGroup) {
+            if (in_array($steamId, $whitelistedGroup->getMembers())) {
+                $response->setGrantAccess(true);
+            }
         }
 
         return $response;

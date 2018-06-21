@@ -12,7 +12,7 @@ class Response
     /**
      * @var string
      */
-    protected $rejectReason;
+    protected $rejectReason = "None";
 
     /**
      * @return bool
