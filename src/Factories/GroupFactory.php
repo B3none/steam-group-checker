@@ -33,9 +33,10 @@ class GroupFactory
         $this->group = new Group();
 
         $this->group->setUrl($groupUrl);
-        $this->detectMembers();
+        $this->getXPath($this->group->getUrl());
         $this->detectName();
         $this->detectGroupID();
+        $this->detectMembers();
 
         return $this->group;
     }
@@ -52,21 +53,17 @@ class GroupFactory
 
     protected function detectMembers()
     {
-        $pages = 2;
+
+        $totalMembers = $this->getTotalMembers();
+        $pages = ($totalMembers / 1000) + 1;
+        $pages = (int)$pages;
+
         for ($pageCount = 1; $pageCount <= $pages; $pageCount++) {
-            $this->getXPath($this->group->getUrl(), $pageCount);
-
-            if ($pageCount === 1) {
-                $totalMembers = $this->getTotalMembers();
-                $pages = ($totalMembers / 1000) + 1;
-                $pages = (int)$pages;
-            }
-
-
             $members = $this->xpath->xpath("/*/members/steamID64");
             for ($memberCount = 0; $memberCount < 1000; $memberCount++) {
-                if (is_string($members[$memberCount])) {
-                    $this->group->addMember($members[$memberCount]);
+                if (!is_null($members[$memberCount])) {
+                    $memberSteamId = $members[$memberCount]->__toString();
+                    $this->group->addMember($memberSteamId);
                 }
             }
         }
@@ -83,15 +80,15 @@ class GroupFactory
 
     protected function detectGroupID()
     {
-        $groupId = $this->xpath->xpath("/*/memberList/groupID64");
+        $groupId = $this->xpath->xpath("/*/groupID64")[0];
 
-        $this->group->setGroupId($groupId[0]->__toString());
+        $this->group->setGroupId($groupId->__toString());
     }
 
     protected function detectName()
     {
-        $name = $this->xpath->xpath("/*/memberList/groupDetails/groupName");
+        $name = $this->xpath->xpath("/*/groupDetails/groupName")[0];
 
-        $this->group->setName($name[0]->__toString());
+        $this->group->setName($name->__toString());
     }
 }
