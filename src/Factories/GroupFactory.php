@@ -53,14 +53,13 @@ class GroupFactory
 
     protected function detectMembers()
     {
-
         $totalMembers = $this->getTotalMembers();
         $pages = ($totalMembers / 1000) + 1;
         $pages = (int)$pages;
 
         for ($pageCount = 1; $pageCount <= $pages; $pageCount++) {
             $members = $this->xpath->xpath("/*/members/steamID64");
-            for ($memberCount = 0; $memberCount < 1000; $memberCount++) {
+            for ($memberCount = 0; $memberCount < count($members); $memberCount++) {
                 if (!is_null($members[$memberCount])) {
                     $memberSteamId = $members[$memberCount]->__toString();
                     $this->group->addMember($memberSteamId);
