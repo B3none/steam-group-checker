@@ -24,6 +24,10 @@ class GroupFactory
      */
     protected $cache;
 
+    /**
+     * GroupFactory constructor.
+     * @param CacheClient $cache
+     */
     public function __construct(CacheClient $cache)
     {
         $this->cache = $cache;
@@ -59,13 +63,13 @@ class GroupFactory
      * @param string $groupUrl
      * @param int $page
      */
-    protected function getXPath(string $groupUrl, int $page = 1)
+    protected function getXPath(string $groupUrl, int $page = 1) : void
     {
         $bodyContents = file_get_contents($groupUrl . self::GROUP_XML . "&p=" . $page);
         $this->xpath = simplexml_load_string($bodyContents);
     }
 
-    protected function detectMembers()
+    protected function detectMembers() : void
     {
         $totalMembers = $this->getTotalMembers();
         $pages = ($totalMembers / 1000) + 1;
@@ -92,14 +96,14 @@ class GroupFactory
         return (int)$totalMembers;
     }
 
-    protected function detectGroupID()
+    protected function detectGroupID() : void
     {
         $groupId = $this->xpath->xpath("/*/groupID64")[0];
 
         $this->group->setGroupId($groupId->__toString());
     }
 
-    protected function detectName()
+    protected function detectName() : void
     {
         $name = $this->xpath->xpath("/*/groupDetails/groupName")[0];
 
