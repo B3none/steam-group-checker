@@ -12,5 +12,8 @@
         "psr-4": {
             "B3none\\SteamGroupChecker\\": "src/"
         }
+    },
+    "require": {
+        "b3none/php-cache": "~1"
     }
 }
