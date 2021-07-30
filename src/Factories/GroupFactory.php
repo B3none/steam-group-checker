@@ -76,6 +76,8 @@ class GroupFactory
         $pages = (int)$pages;
 
         for ($pageCount = 1; $pageCount <= $pages; $pageCount++) {
+
+            $this->getXPath($this->group->getUrl(), $pageCount);
             $members = $this->xpath->xpath("/*/members/steamID64");
 
             for ($memberCount = 0; $memberCount < count($members); $memberCount++) {
